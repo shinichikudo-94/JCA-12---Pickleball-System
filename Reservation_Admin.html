@@ -1,0 +1,837 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JCSGO Facility Reservations — Admin</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --navy: #04175b;
+      --blue: #087fe5;
+      --gold: #ffb11a;
+      --ink: #172033;
+      --muted: #667085;
+      --bg: #f3f6fb;
+      --line: #e2e8f0;
+      --green: #15803d;
+      --red: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 18px 5%;
+      color: white;
+      background: linear-gradient(120deg, var(--navy), var(--blue));
+      box-shadow: 0 4px 16px #04175b20;
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    .admin-tag {
+      padding: 6px 10px;
+      border: 1px solid #ffffff80;
+      border-radius: 99px;
+      font-size: 0.78rem;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 18px 40px;
+    }
+
+    .hero {
+      padding: 26px;
+      margin-bottom: 20px;
+      color: white;
+      background: linear-gradient(120deg, var(--navy), var(--blue));
+      border-radius: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.5rem, 4vw, 2.15rem);
+      line-height: 1.2;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat,
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 6px 22px #0c24600a;
+    }
+
+    .stat {
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .stat-number {
+      margin-top: 5px;
+      color: var(--navy);
+      font-size: 1.9rem;
+      font-weight: 800;
+    }
+
+    .card {
+      padding: 21px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin-bottom: 13px;
+      color: var(--navy);
+      font-size: 1.2rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 11px;
+      color: var(--ink);
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid #087fe544;
+      border-color: var(--blue);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .btn {
+      padding: 9px 12px;
+      border: 0;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid #60a5fa;
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      color: white;
+      background: var(--navy);
+    }
+
+    .primary:hover {
+      background: var(--blue);
+    }
+
+    .secondary {
+      color: var(--navy);
+      background: #eaf2ff;
+    }
+
+    .approve {
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .reject {
+      color: #991b1b;
+      background: #fee2e2;
+    }
+
+    .danger {
+      color: white;
+      background: #991b1b;
+    }
+
+    .small {
+      padding: 7px 9px;
+      font-size: 0.78rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 11px 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.86rem;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      color: #344054;
+      background: #f8fafc;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pending {
+      color: #805800;
+      background: #fff2d5;
+    }
+
+    .approved-status {
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .rejected-status {
+      color: #991b1b;
+      background: #fee2e2;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .empty {
+      padding: 25px;
+      color: var(--muted);
+      background: #f8fafc;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .bottom-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail {
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 9px;
+    }
+
+    .detail strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    footer {
+      padding: 20px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 850px) {
+      .stats,
+      .controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .controls,
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .hero {
+        padding: 21px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        JCSGO Facility Reservations
+        <small>Administrator Dashboard • Sky Garden & Skyline</small>
+      </div>
+
+      <span class="admin-tag">ADMIN</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Reservation Administration</h1>
+    </section>
+
+    <section class="stats" aria-label="Reservation summary">
+      <div class="stat">
+        <div class="stat-label">All Requests</div>
+        <div class="stat-number" id="totalCount">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Pending Review</div>
+        <div class="stat-number" id="pendingCount">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Approved</div>
+        <div class="stat-number" id="approvedCount">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Rejected</div>
+        <div class="stat-number" id="rejectedCount">0</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Find Requests</h2>
+
+      <div class="controls">
+        <div class="field">
+          <label for="search">Search name, purpose, contact, or section</label>
+          <input id="search" type="search" placeholder="Type to search…">
+        </div>
+
+        <div class="field">
+          <label for="facilityFilter">Facility</label>
+          <select id="facilityFilter">
+            <option value="All">All facilities</option>
+            <option>Sky Garden</option>
+            <option>Skyline</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="statusFilter">Status</label>
+          <select id="statusFilter">
+            <option value="All">All statuses</option>
+            <option>Pending</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="dateFilter">Reservation date</label>
+          <input id="dateFilter" type="date">
+        </div>
+      </div>
+
+      <div class="bottom-actions">
+        <span class="muted" id="resultCount">Showing 0 requests</span>
+        <button class="btn secondary" id="clearFilters" type="button">
+          Clear filters
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Reservation Requests</h2>
+      <div id="tableTarget"></div>
+    </section>
+
+    <section class="card">
+      <h2>Data Management</h2>
+
+      <div class="actions" style="margin-top: 12px">
+        <button class="btn secondary" id="exportCsv" type="button">
+          Export requests as CSV
+        </button>
+
+        <button class="btn danger" id="resetAll" type="button">
+          Reset all requests
+        </button>
+      </div>
+
+      <p class="muted" id="dataMessage" role="status" style="margin-top: 10px"></p>
+    </section>
+  </main>
+
+  <footer>
+    JCSGO Facility Reservation System • Administrator Dashboard
+  </footer>
+
+  <script>
+    const STORAGE_KEY = 'jcsgoFacilityReservationsDemo';
+    const $ = id => document.getElementById(id);
+
+    // Read and save reservations
+    function getReservations() {
+      try {
+        const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        return Array.isArray(value) ? value : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveReservations(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    // Safely display stored values in HTML
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
+    function statusClass(status) {
+      if (status === 'Approved') return 'approved-status';
+      if (status === 'Rejected') return 'rejected-status';
+      return 'pending';
+    }
+
+    // Update the summary cards
+    function updateStats() {
+      const items = getReservations();
+
+      $('totalCount').textContent = items.length;
+
+      $('pendingCount').textContent = items.filter(
+        item => (item.status || 'Pending') === 'Pending'
+      ).length;
+
+      $('approvedCount').textContent = items.filter(
+        item => item.status === 'Approved'
+      ).length;
+
+      $('rejectedCount').textContent = items.filter(
+        item => item.status === 'Rejected'
+      ).length;
+    }
+
+    // Apply search and filters
+    function getFiltered() {
+      const query = $('search').value.trim().toLowerCase();
+      const facility = $('facilityFilter').value;
+      const status = $('statusFilter').value;
+      const date = $('dateFilter').value;
+
+      return getReservations()
+        .filter(request => {
+          const matchesText = [
+            request.name,
+            request.purpose,
+            request.email,
+            request.grade,
+            request.role
+          ].some(value =>
+            String(value || '').toLowerCase().includes(query)
+          );
+
+          return matchesText &&
+            (facility === 'All' || request.facility === facility) &&
+            (status === 'All' || (request.status || 'Pending') === status) &&
+            (!date || request.date === date);
+        })
+        .sort((a, b) =>
+          (String(a.date || '') + String(a.start || ''))
+            .localeCompare(String(b.date || '') + String(b.start || ''))
+        );
+    }
+
+    // Check for overlapping reservations
+    function hasConflict(request, items) {
+      return items.some(item =>
+        String(item.id) !== String(request.id) &&
+        item.facility === request.facility &&
+        item.date === request.date &&
+        (item.status || 'Pending') !== 'Rejected' &&
+        request.start < item.end &&
+        request.end > item.start
+      );
+    }
+
+    function findIndex(items, id) {
+      return items.findIndex(item => String(item.id) === String(id));
+    }
+
+    // Display the reservation table
+    function render() {
+      updateStats();
+
+      const items = getFiltered();
+      const allItems = getReservations();
+
+      $('resultCount').textContent =
+        `Showing ${items.length} of ${allItems.length} request(s)`;
+
+      if (!items.length) {
+        $('tableTarget').innerHTML = `
+          <div class="empty">
+            No requests match these filters. Requests submitted through
+            the reservation page may appear here if they are saved in this browser.
+          </div>
+        `;
+        return;
+      }
+
+      const rows = items.map(request => {
+        const status = request.status || 'Pending';
+        const conflict = hasConflict(request, allItems);
+
+        return `
+          <tr>
+            <td>
+              <strong>${esc(request.name)}</strong><br>
+              <span class="muted">${esc(request.role || '')}</span><br>
+              <span class="muted">${esc(request.grade || '')}</span><br>
+              <span class="muted">${esc(request.email || '')}</span>
+            </td>
+
+            <td>
+              <strong>${esc(request.facility)}</strong><br>
+              ${esc(request.date)}<br>
+              ${esc(request.start)}–${esc(request.end)}
+            </td>
+
+            <td>${esc(request.purpose)}</td>
+
+            <td>
+              <span class="status ${statusClass(status)}">
+                ${esc(status)}
+              </span>
+              ${conflict
+                ? '<br><span class="muted" style="color:#b91c1c">Overlapping request</span>'
+                : ''}
+            </td>
+
+            <td>
+              <div class="actions">
+                <button
+                  class="btn approve small"
+                  data-action="approve"
+                  data-id="${esc(request.id)}"
+                  ${status === 'Approved' ? 'disabled' : ''}>
+                  Approve
+                </button>
+
+                <button
+                  class="btn reject small"
+                  data-action="reject"
+                  data-id="${esc(request.id)}"
+                  ${status === 'Rejected' ? 'disabled' : ''}>
+                  Reject
+                </button>
+
+                <button
+                  class="btn secondary small"
+                  data-action="details"
+                  data-id="${esc(request.id)}">
+                  Details
+                </button>
+
+                <button
+                  class="btn danger small"
+                  data-action="delete"
+                  data-id="${esc(request.id)}">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      $('tableTarget').innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Requester</th>
+                <th>Facility & Schedule</th>
+                <th>Purpose</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Handle reservation actions
+    $('tableTarget').addEventListener('click', event => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+      const items = getReservations();
+      const index = findIndex(items, id);
+
+      if (index < 0) {
+        alert('This request could not be found. Refreshing the list.');
+        render();
+        return;
+      }
+
+      const request = items[index];
+
+      if (action === 'approve') {
+        if (hasConflict(request, items)) {
+          alert(
+            'Cannot approve this request because its facility and time overlap ' +
+            'another non-rejected request on the same date. Resolve the conflict first.'
+          );
+          return;
+        }
+
+        const confirmed = confirm(
+          `Approve this reservation for ${request.name || 'this requester'} ` +
+          `at ${request.facility} on ${request.date}, ` +
+          `${request.start}–${request.end}?`
+        );
+
+        if (!confirmed) return;
+
+        request.status = 'Approved';
+        saveReservations(items);
+        $('dataMessage').textContent = 'Request approved in this browser.';
+        render();
+
+      } else if (action === 'reject') {
+        if (!confirm(
+          `Reject the reservation request from ${request.name || 'this requester'}?`
+        )) return;
+
+        request.status = 'Rejected';
+        saveReservations(items);
+        $('dataMessage').textContent = 'Request rejected in this browser.';
+        render();
+
+      } else if (action === 'delete') {
+        if (!confirm(
+          `Permanently delete the request from ${request.name || 'this requester'}? ` +
+          'This cannot be undone.'
+        )) return;
+
+        items.splice(index, 1);
+        saveReservations(items);
+        $('dataMessage').textContent = 'Request deleted.';
+        render();
+
+      } else if (action === 'details') {
+        alert(`REQUEST DETAILS
+
+Name: ${request.name || '—'}
+Role: ${request.role || '—'}
+Grade/Section: ${request.grade || '—'}
+Contact: ${request.email || '—'}
+Facility: ${request.facility || '—'}
+Date: ${request.date || '—'}
+Time: ${request.start || '—'}–${request.end || '—'}
+Purpose: ${request.purpose || '—'}
+Status: ${request.status || 'Pending'}`);
+      }
+    });
+
+    // Refresh results when filters change
+    ['search', 'facilityFilter', 'statusFilter', 'dateFilter'].forEach(id => {
+      $(id).addEventListener(
+        id === 'search' ? 'input' : 'change',
+        render
+      );
+    });
+
+    // Clear all filters
+    $('clearFilters').addEventListener('click', () => {
+      $('search').value = '';
+      $('facilityFilter').value = 'All';
+      $('statusFilter').value = 'All';
+      $('dateFilter').value = '';
+
+      render();
+    });
+
+    // Delete all saved requests
+    $('resetAll').addEventListener('click', () => {
+      const items = getReservations();
+
+      if (!items.length) {
+        alert('There are no requests to reset.');
+        return;
+      }
+
+      if (!confirm(
+        `Delete all ${items.length} request(s) from this browser? ` +
+        'This cannot be undone.'
+      )) return;
+
+      saveReservations([]);
+      $('dataMessage').textContent =
+        'All requests were cleared from this browser.';
+
+      render();
+    });
+
+    // Export filtered requests as CSV
+    $('exportCsv').addEventListener('click', () => {
+      const items = getFiltered();
+
+      if (!items.length) {
+        alert('There are no filtered requests to export.');
+        return;
+      }
+
+      const fields = [
+        'id', 'name', 'role', 'grade', 'email',
+        'facility', 'date', 'start', 'end', 'purpose', 'status'
+      ];
+
+      const quote = value =>
+        '"' + String(value ?? '').replace(/"/g, '""') + '"';
+
+      const csv = [
+        fields.join(','),
+        ...items.map(request =>
+          fields.map(field =>
+            quote(field === 'status'
+              ? (request.status || 'Pending')
+              : request[field])
+          ).join(',')
+        )
+      ].join('\r\n');
+
+      const blob = new Blob(['\ufeff' + csv], {
+        type: 'text/csv;charset=utf-8;'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.download = 'jcsgo-reservation-requests.csv';
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+
+      $('dataMessage').textContent =
+        `Exported ${items.length} request(s) to CSV.`;
+    });
+
+    // Update the dashboard when saved data changes in another tab
+    window.addEventListener('storage', event => {
+      if (event.key === STORAGE_KEY) render();
+    });
+
+    // Initial display
+    render();
+  </script>
+</body>
+</html>
