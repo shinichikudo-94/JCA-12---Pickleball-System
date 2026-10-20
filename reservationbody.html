@@ -12,9 +12,10 @@ body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);li
 header{background:linear-gradient(120deg,var(--navy),#087fe5);color:#fff;padding:18px 5%;box-shadow:0 4px 16px #04175b20}
 .topbar{max-width:1150px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
 .brand{font-size:1.12rem;font-weight:800;letter-spacing:.2px}.brand small{display:block;font-size:.75rem;font-weight:500;opacity:.85}
-nav{display:flex;gap:8px;flex-wrap:wrap}
+nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 nav button{font:inherit;color:white;background:transparent;border:1px solid #ffffff65;border-radius:9px;padding:9px 12px;cursor:pointer}
 nav button:hover,nav button.active{background:#fff;color:var(--navy)}
+.logout-btn{background:#fff;color:#04175b;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
 main{max-width:1050px;margin:28px auto;padding:0 18px 40px}
 .page{display:none}.page.active{display:block}
 .hero{background:linear-gradient(120deg,#04175b,#087fe5);color:#fff;border-radius:18px;padding:30px;margin-bottom:22px}
@@ -50,6 +51,7 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:.85rem}
       <button data-page="availability">Availability</button>
       <button data-page="help">Help</button>
       <button data-page="about">About Us</button>
+      <button class="logout-btn" onclick="window.location.href='indexjireh.html'">Logout</button>
     </nav>
   </div>
 </header>
@@ -61,13 +63,12 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:.85rem}
     </div>
     <div class="grid">
       <article class="card"><h2>Request a Reservation</h2><p>Submit the facility, date, time, and purpose of your activity for review.</p><br><button class="btn" data-go="reserve">Make a request</button></article>
-      <article class="card"><h2>Check Availability</h2><p>Review requests saved in this browser to see whether a time slot appears occupied.</p><br><button class="btn" data-go="availability">View schedule</button></article>
+      <article class="card"><h2>Check Availability</h2><p>Review requests to see whether a time slot appears occupied.</p><br><button class="btn" data-go="availability">View schedule</button></article>
     </div>
-    <div class="card"><h2>Before you book</h2><ul class="steps"><li>Check the facility and time you need.</li><li>Submit complete and accurate information.</li><li>Wait for the authorized school administrator to approve your request.</li></ul><p class="note">Demo notice: this prototype does not send requests to the school administration.</p></div>
+    <div class="card"><h2>Before you book</h2><ul class="steps"><li>Check the facility and time you need.</li><li>Submit complete and accurate information.</li><li>Wait for the authorized school administrator to approve your request.</li></ul></div>
   </section>
-
   <section id="reserve" class="page">
-    <div class="hero"><h1>Request a Reservation</h1><p>Complete the form below. A request will be saved in this browser for demonstration purposes.</p></div>
+    <div class="hero"><h1>Request a Reservation</h1><p>Complete the form below.</p></div>
     <div class="card">
       <form id="reservationForm">
         <div class="grid">
@@ -79,17 +80,15 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:.85rem}
           <div class="field"><label for="date">Requested Date *</label><input id="date" type="date" required></div>
           <div class="field"><label for="start">Start Time *</label><input id="start" type="time" required></div>
           <div class="field"><label for="end">End Time *</label><input id="end" type="time" required></div>
-          <div class="field full"><label for="purpose">Purpose of Reservation *</label><textarea id="purpose" rows="3" required maxlength="500" placeholder="Describe the activity and any relevant details"></textarea></div>
+          <div class="field full"><label for="purpose">Purpose of Reservation *</label><textarea id="purpose" rows="3" required maxlength="500" placeholder="Describe the activity"></textarea></div>
         </div>
         <button class="btn" type="submit">Submit Request</button>
         <p id="formMessage" class="note" role="status"></p>
-        <p class="note">Submitting here only saves a sample request on this device. It does not constitute official approval.</p>
       </form>
     </div>
   </section>
-
   <section id="availability" class="page">
-    <div class="hero"><h1>Facility Availability</h1><p>View reservation requests saved in this browser. Pending requests are shown so users can avoid requesting the same time.</p></div>
+    <div class="hero"><h1>Facility Availability</h1><p>View reservation requests.</p></div>
     <div class="card">
       <div class="grid">
         <div class="field"><label for="filterFacility">Filter by facility</label><select id="filterFacility"><option value="All">All facilities</option><option>Sky Garden</option><option>Skyline</option></select></div>
@@ -97,41 +96,25 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:.85rem}
       </div>
       <button class="btn secondary" id="clearFilters" type="button">Clear filters</button>
       <div id="reservationList"></div>
-      <p class="note">Availability shown here is based only on this browser's local demo records. Confirm the official schedule with the school administrator.</p>
     </div>
   </section>
-
   <section id="help" class="page">
-    <div class="hero"><h1>Help Center</h1><p>Guidance for using the facility reservation prototype.</p></div>
+    <div class="hero"><h1>Help Center</h1></div>
     <div class="card faq">
       <h2>Frequently Asked Questions</h2>
-      <details><summary>How do I request a facility?</summary><p>Open “Request Reservation,” fill in all required fields, choose the facility and schedule, describe your activity, and press “Submit Request.”</p></details>
-      <details><summary>Does submitting a request mean it is approved?</summary><p>No. A submitted request is only a request. The authorized school administrator must review and approve it.</p></details>
-      <details><summary>How can I check availability?</summary><p>Open “Availability” and filter by facility or date. This prototype only shows requests stored in the current browser.</p></details>
-      <details><summary>What if my requested time overlaps another request?</summary><p>The prototype checks for overlapping requests saved on this device and warns you. Please confirm the final schedule with the school administrator.</p></details>
-      <details><summary>Can I cancel or edit my request?</summary><p>This demonstration version does not yet include user accounts or a cancellation/editing workflow. Contact the authorized administrator for changes.</p></details>
-      <details><summary>Who should I contact if I need help?</summary><p>Please contact the school office or the staff member responsible for facility scheduling. Add the official contact details here once they are confirmed.</p></details>
+      <details><summary>How do I request a facility?</summary><p>Open Request Reservation, fill the form, and submit.</p></details>
+      <details><summary>Does submitting mean it is approved?</summary><p>No. An admin must approve it.</p></details>
     </div>
   </section>
-
   <section id="about" class="page">
-    <div class="hero"><h1>About Us</h1><p>A proposed digital tool to make facility scheduling more organized and convenient.</p></div>
+    <div class="hero"><h1>About Us</h1></div>
     <div class="card">
       <h2>About the Project</h2>
-      <p>The JCSGO Facility Reservation System is a student project proposal intended to help organize requests for the Sky Garden and Skyline of JCSGO Christian Academy. It aims to make facility schedules easier to check, record reservation details in one place, and help reduce scheduling conflicts.</p>
-    </div>
-    <div class="card">
-      <h2>Project Objectives</h2>
-      <ul class="steps"><li>Provide a convenient way to submit reservation requests.</li><li>Display saved requests and their current status.</li><li>Help prevent overlapping reservation times.</li><li>Support clearer communication between requesters and facility administrators.</li></ul>
-    </div>
-    <div class="card">
-      <h2>Project Team</h2>
-      <p>This prototype is being prepared by students as part of a school project. Add the complete names and assigned roles of the group members here after your group confirms them.</p>
-      <p class="note">This is a proposed system and is not an official school service unless approved and deployed by JCSGO Christian Academy.</p>
+      <p>JCSGO Facility Reservation System for Sky Garden and Skyline.</p>
     </div>
   </section>
 </main>
-<footer>JCSGO Facility Reservation System • Student Project Prototype</footer>
+<footer>JCSGO Facility Reservation System • Student Project</footer>
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxIrx2AIui7yOusL5pfH-EjUMtuc-LSudvD3YaY7bVwrv05BCG9RDs7t7KJ01np4SQ/exec';
 const pageButtons = document.querySelectorAll('[data-page]');
@@ -143,26 +126,19 @@ function showPage(id){
 }
 pageButtons.forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));
-
 async function getReservations() {
   try {
     const res = await fetch(WEB_APP_URL + '?action=getReservations');
     const data = await res.json();
     return data.success ? data.reservations : [];
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
+  } catch (e) { return []; }
 }
-
 const dateInput = document.getElementById('date');
 const today = new Date();
 dateInput.min = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-
 document.getElementById('reservationForm').addEventListener('submit', async e => {
   e.preventDefault();
   const message = document.getElementById('formMessage');
-
   const params = new URLSearchParams({
     action: 'submitReservation',
     name: document.getElementById('name').value.trim(),
@@ -175,57 +151,34 @@ document.getElementById('reservationForm').addEventListener('submit', async e =>
     end: document.getElementById('end').value,
     purpose: document.getElementById('purpose').value.trim()
   });
-
   if (params.get('end') <= params.get('start')) {
     message.textContent = 'End time must be later than start time.';
     return;
   }
-
   try {
     const res = await fetch(WEB_APP_URL + '?' + params.toString());
     const result = await res.json();
-
-    if (result.success) {
-      message.textContent = 'Request submitted! Status: Pending';
-      e.target.reset();
-    } else {
-      message.textContent = result.message || 'Failed to submit';
-    }
+    message.textContent = result.success ? 'Request submitted! Status: Pending' : (result.message || 'Failed');
+    if (result.success) e.target.reset();
   } catch (err) {
     message.textContent = 'Error connecting to server.';
   }
 });
-
 async function renderReservations() {
   const facility = document.getElementById('filterFacility').value;
   const date = document.getElementById('filterDate').value;
   const all = await getReservations();
-  const list = all.filter(r => 
-    (facility === 'All' || r.facility === facility) && 
-    (!date || r.date === date)
-  ).sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
-
+  const list = all.filter(r => (facility === 'All' || r.facility === facility) && (!date || r.date === date));
   const target = document.getElementById('reservationList');
   if (!list.length) {
     target.innerHTML = '<div class="empty">No reservation requests yet.</div>';
     return;
   }
-
   target.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Facility</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th></tr></thead><tbody>' +
-    list.map(r => `<tr>
-      <td>${escapeHTML(r.facility)}</td>
-      <td>${escapeHTML(r.date)}</td>
-      <td>${escapeHTML(r.start)}–${escapeHTML(r.end)}</td>
-      <td>${escapeHTML(r.purpose)}</td>
-      <td><span class="status ${r.status==='Approved'?'approved':r.status==='Rejected'?'rejected':''}">${escapeHTML(r.status)}</span></td>
-    </tr>`).join('') +
+    list.map(r => `<tr><td>${escapeHTML(r.facility)}</td><td>${escapeHTML(r.date)}</td><td>${escapeHTML(r.start)}–${escapeHTML(r.end)}</td><td>${escapeHTML(r.purpose)}</td><td><span class="status ${r.status==='Approved'?'approved':r.status==='Rejected'?'rejected':''}">${escapeHTML(r.status)}</span></td></tr>`).join('') +
     '</tbody></table></div>';
 }
-
-function escapeHTML(value) {
-  return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
+function escapeHTML(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 document.getElementById('filterFacility').addEventListener('change', renderReservations);
 document.getElementById('filterDate').addEventListener('change', renderReservations);
 document.getElementById('clearFilters').addEventListener('click', () => {
