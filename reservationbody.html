@@ -133,6 +133,7 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:.85rem}
 </main>
 <footer>JCSGO Facility Reservation System • Student Project Prototype</footer>
 <script>
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxIrx2AIui7yOusL5pfH-EjUMtuc-LSudvD3YaY7bVwrv05BCG9RDs7t7KJ01np4SQ/exec';
 const pageButtons = document.querySelectorAll('[data-page]');
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
@@ -142,42 +143,96 @@ function showPage(id){
 }
 pageButtons.forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));
-const STORAGE_KEY='jcsgoFacilityReservationsDemo';
-const getReservations=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return []}};
-const saveReservations=data=>localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-const dateInput=document.getElementById('date');
-const today=new Date();dateInput.min=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-document.getElementById('reservationForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const request={
-    id:Date.now(),name:document.getElementById('name').value.trim(),
-    role:document.getElementById('role').value,grade:document.getElementById('grade').value.trim(),
-    email:document.getElementById('email').value.trim(),facility:document.getElementById('facility').value,
-    date:dateInput.value,start:document.getElementById('start').value,end:document.getElementById('end').value,
-    purpose:document.getElementById('purpose').value.trim(),status:'Pending'
-  };
-  const message=document.getElementById('formMessage');
-  if(request.end<=request.start){message.textContent='Please choose an end time that is later than the start time.';return}
-  const overlap=getReservations().some(r=>r.facility===request.facility&&r.date===request.date&&r.status!=='Rejected'&&request.start<r.end&&request.end>r.start);
-  if(overlap){message.textContent='Possible scheduling conflict: a request for this facility overlaps that time. Please choose another time or confirm with the administrator.';return}
-  const all=getReservations();all.push(request);saveReservations(all);
-  message.textContent='Demo request saved as Pending. This has not been sent to the school administrator.';
-  e.target.reset();dateInput.min=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-});
-function renderReservations(){
-  const facility=document.getElementById('filterFacility').value;
-  const date=document.getElementById('filterDate').value;
-  const list=getReservations().filter(r=>(facility==='All'||r.facility===facility)&&(!date||r.date===date)).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
-  const target=document.getElementById('reservationList');
-  if(!list.length){target.innerHTML='<div class="empty">No demo reservation requests match these filters yet.</div>';return}
-  target.innerHTML='<div class="table-wrap"><table><thead><tr><th>Facility</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th></tr></thead><tbody>'+
-  list.map(r=>`<tr><td>${escapeHTML(r.facility)}</td><td>${escapeHTML(r.date)}</td><td>${escapeHTML(r.start)}–${escapeHTML(r.end)}</td><td>${escapeHTML(r.purpose)}</td><td><span class="status">${escapeHTML(r.status)}</span></td></tr>`).join('')+
-  '</tbody></table></div>';
+
+async function getReservations() {
+  try {
+    const res = await fetch(WEB_APP_URL + '?action=getReservations');
+    const data = await res.json();
+    return data.success ? data.reservations : [];
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
-function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-document.getElementById('filterFacility').addEventListener('change',renderReservations);
-document.getElementById('filterDate').addEventListener('change',renderReservations);
-document.getElementById('clearFilters').addEventListener('click',()=>{document.getElementById('filterFacility').value='All';document.getElementById('filterDate').value='';renderReservations()});
+
+const dateInput = document.getElementById('date');
+const today = new Date();
+dateInput.min = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+document.getElementById('reservationForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const message = document.getElementById('formMessage');
+
+  const params = new URLSearchParams({
+    action: 'submitReservation',
+    name: document.getElementById('name').value.trim(),
+    role: document.getElementById('role').value,
+    grade: document.getElementById('grade').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    facility: document.getElementById('facility').value,
+    date: dateInput.value,
+    start: document.getElementById('start').value,
+    end: document.getElementById('end').value,
+    purpose: document.getElementById('purpose').value.trim()
+  });
+
+  if (params.get('end') <= params.get('start')) {
+    message.textContent = 'End time must be later than start time.';
+    return;
+  }
+
+  try {
+    const res = await fetch(WEB_APP_URL + '?' + params.toString());
+    const result = await res.json();
+
+    if (result.success) {
+      message.textContent = 'Request submitted! Status: Pending';
+      e.target.reset();
+    } else {
+      message.textContent = result.message || 'Failed to submit';
+    }
+  } catch (err) {
+    message.textContent = 'Error connecting to server.';
+  }
+});
+
+async function renderReservations() {
+  const facility = document.getElementById('filterFacility').value;
+  const date = document.getElementById('filterDate').value;
+  const all = await getReservations();
+  const list = all.filter(r => 
+    (facility === 'All' || r.facility === facility) && 
+    (!date || r.date === date)
+  ).sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
+
+  const target = document.getElementById('reservationList');
+  if (!list.length) {
+    target.innerHTML = '<div class="empty">No reservation requests yet.</div>';
+    return;
+  }
+
+  target.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Facility</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th></tr></thead><tbody>' +
+    list.map(r => `<tr>
+      <td>${escapeHTML(r.facility)}</td>
+      <td>${escapeHTML(r.date)}</td>
+      <td>${escapeHTML(r.start)}–${escapeHTML(r.end)}</td>
+      <td>${escapeHTML(r.purpose)}</td>
+      <td><span class="status ${r.status==='Approved'?'approved':r.status==='Rejected'?'rejected':''}">${escapeHTML(r.status)}</span></td>
+    </tr>`).join('') +
+    '</tbody></table></div>';
+}
+
+function escapeHTML(value) {
+  return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.getElementById('filterFacility').addEventListener('change', renderReservations);
+document.getElementById('filterDate').addEventListener('change', renderReservations);
+document.getElementById('clearFilters').addEventListener('click', () => {
+  document.getElementById('filterFacility').value = 'All';
+  document.getElementById('filterDate').value = '';
+  renderReservations();
+});
 </script>
 </body>
 </html>
