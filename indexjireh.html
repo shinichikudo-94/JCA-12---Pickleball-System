@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head> 
+  <meta charset="UTF-8">
+  <title>JCSGO Pickleball | Log-In</title>
+  <link rel="stylesheet" href="indexjireh.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="container">
+    <div class="title">Log-In / Sign Up</div>
+
+    <!-- Role Selection -->
+    <div class="role-details">
+      <span class="role-title">Role</span>
+      <div class="category">
+        <label>
+          <input type="radio" name="role" value="student" required>
+          <span class="role-text">Student</span>
+        </label>
+        <label>
+          <input type="radio" name="role" value="admin" required>
+          <span class="role-text">Admin</span>
+        </label>
+      </div>
+    </div>
+
+    <form action="#">
+      <div class="user-details">
+        <div class="input-box">
+          <span class="details">Full Name</span>
+          <input type="text" placeholder="Enter your name" required>
+        </div>
+        <div class="input-box">
+          <span class="details">Grade and Section</span>
+          <input type="text" placeholder="Enter your grade & section" required>
+        </div>
+        <div class="input-box">
+          <span class="details">Email</span>
+          <input type="text" placeholder="Enter your email" required>
+        </div>
+        <div class="input-box">
+          <span class="details">Contact No.</span>
+          <input type="text" placeholder="Enter your contact number" required>
+        </div>
+        <div class="input-box">
+          <span class="details">Password</span>
+          <input type="password" placeholder="Enter your password" required>
+        </div>
+        <div class="input-box">
+          <span class="details">Confirm Password</span>
+          <input type="password" placeholder="Confirm your password" required>
+        </div>
+      </div>
+
+      <!-- Gender -->
+      <div class="gender-details">
+        <span class="gender-title">Gender</span>
+        <div class="category">
+          <label>
+            <input type="radio" name="gender" value="Male" required>
+            <span class="dot"></span>
+            <span class="gender">Male</span>
+          </label>
+          <label>
+            <input type="radio" name="gender" value="Female">
+            <span class="dot"></span>
+            <span class="gender">Female</span>
+          </label>
+          <label>
+            <input type="radio" name="gender" value="Prefer not to say">
+            <span class="dot"></span>
+            <span class="gender">Prefer not to say</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="button">
+        <input type="submit" value="Log-In">
+      </div>
+    </form>
+  </div>
+
+  <script src="indexjireh.js"></script>
+</body> 
+</html>
