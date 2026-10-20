@@ -38,7 +38,12 @@ form.addEventListener('submit', async function(e) {
 
     if (result.success) {
       alert("Registered successfully!");
-      form.reset();
+      // Redirect based on role
+      if (role === 'student') {
+        window.location.href = 'reservationbody.html';
+      } else if (role === 'admin') {
+        window.location.href = 'Reservation_Admin.html';
+      }
     } else {
       alert(result.message || "Registration failed");
     }
