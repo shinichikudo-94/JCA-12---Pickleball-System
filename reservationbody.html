@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JCSGO Facility Reservation System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{--navy:#04175b;--blue:#087fe5;--gold:#ffb11a;--ink:#172033;--muted:#667085;--bg:#f3f6fb;--line:#e2e8f0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+header{background:linear-gradient(120deg,var(--navy),#087fe5);color:#fff;padding:18px 5%;box-shadow:0 4px 16px #04175b20}
+.topbar{max-width:1150px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.brand{font-size:1.12rem;font-weight:800;letter-spacing:.2px}.brand small{display:block;font-size:.75rem;font-weight:500;opacity:.85}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{font:inherit;color:white;background:transparent;border:1px solid #ffffff65;border-radius:9px;padding:9px 12px;cursor:pointer}
+nav button:hover,nav button.active{background:#fff;color:var(--navy)}
+main{max-width:1050px;margin:28px auto;padding:0 18px 40px}
+.page{display:none}.page.active{display:block}
+.hero{background:linear-gradient(120deg,#04175b,#087fe5);color:#fff;border-radius:18px;padding:30px;margin-bottom:22px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.2;margin-bottom:10px}
+.hero p{max-width:720px;opacity:.92}
+.card{background:white;border:1px solid var(--line);border-radius:15px;padding:23px;margin-bottom:18px;box-shadow:0 6px 22px #0c24600a}
+h2{font-size:1.35rem;margin-bottom:12px;color:var(--navy)}h3{font-size:1rem;margin-bottom:7px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+label{display:block;font-size:.9rem;font-weight:600;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid #087fe544;border-color:var(--blue)}
+.field{margin-bottom:15px}.full{grid-column:1/-1}
+.btn{border:0;border-radius:9px;background:var(--navy);color:white;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--blue)}.btn.secondary{background:#eaf2ff;color:var(--navy)}
+.note{font-size:.88rem;color:var(--muted);margin-top:10px}
+.status{display:inline-block;padding:4px 9px;border-radius:99px;font-size:.78rem;font-weight:700;background:#fff2d5;color:#805800}
+.status.approved{background:#dcfce7;color:#166534}.status.rejected{background:#fee2e2;color:#991b1b}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line);font-size:.9rem}th{background:#f8fafc;color:#344054}
+.table-wrap{overflow-x:auto}.empty{padding:18px;background:#f8fafc;border-radius:10px;color:var(--muted)}
+.faq details{border-bottom:1px solid var(--line);padding:13px 0}.faq summary{font-weight:700;cursor:pointer}.faq details p{color:var(--muted);padding-top:8px}
+.steps{padding-left:22px}.steps li{margin:8px 0}
+footer{text-align:center;color:var(--muted);padding:20px;font-size:.85rem}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.hero{padding:23px}header{padding:16px 4%}nav button{padding:8px 9px;font-size:.84rem}.card{padding:17px}table{min-width:580px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">JCSGO Facility Reservations<small>Sky Garden • Skyline</small></div>
+    <nav aria-label="Main navigation">
+      <button class="active" data-page="home">Home</button>
+      <button data-page="reserve">Request Reservation</button>
+      <button data-page="availability">Availability</button>
+      <button data-page="help">Help</button>
+      <button data-page="about">About Us</button>
+    </nav>
+  </div>
+</header>
+<main>
+  <section id="home" class="page active">
+    <div class="hero">
+      <h1>Reserve a space. Plan with confidence.</h1>
+      <p>A simple demonstration system for requesting the Sky Garden or Skyline at JCSGO Christian Academy and checking reservation records.</p>
+    </div>
+    <div class="grid">
+      <article class="card"><h2>Request a Reservation</h2><p>Submit the facility, date, time, and purpose of your activity for review.</p><br><button class="btn" data-go="reserve">Make a request</button></article>
+      <article class="card"><h2>Check Availability</h2><p>Review requests saved in this browser to see whether a time slot appears occupied.</p><br><button class="btn" data-go="availability">View schedule</button></article>
+    </div>
+    <div class="card"><h2>Before you book</h2><ul class="steps"><li>Check the facility and time you need.</li><li>Submit complete and accurate information.</li><li>Wait for the authorized school administrator to approve your request.</li></ul><p class="note">Demo notice: this prototype does not send requests to the school administration.</p></div>
+  </section>
+
+  <section id="reserve" class="page">
+    <div class="hero"><h1>Request a Reservation</h1><p>Complete the form below. A request will be saved in this browser for demonstration purposes.</p></div>
+    <div class="card">
+      <form id="reservationForm">
+        <div class="grid">
+          <div class="field"><label for="name">Full Name *</label><input id="name" required maxlength="100" placeholder="Enter your full name"></div>
+          <div class="field"><label for="role">Role *</label><select id="role" required><option value="">Choose one</option><option>Student</option><option>Teacher</option><option>School Personnel</option><option>Student Organization Representative</option></select></div>
+          <div class="field"><label for="grade">Grade and Section / Department</label><input id="grade" maxlength="100" placeholder="e.g., Grade 12 - ICT"></div>
+          <div class="field"><label for="email">School Email or Contact *</label><input id="email" required maxlength="120" placeholder="Enter contact information"></div>
+          <div class="field"><label for="facility">Facility *</label><select id="facility" required><option value="">Choose a facility</option><option>Sky Garden</option><option>Skyline</option></select></div>
+          <div class="field"><label for="date">Requested Date *</label><input id="date" type="date" required></div>
+          <div class="field"><label for="start">Start Time *</label><input id="start" type="time" required></div>
+          <div class="field"><label for="end">End Time *</label><input id="end" type="time" required></div>
+          <div class="field full"><label for="purpose">Purpose of Reservation *</label><textarea id="purpose" rows="3" required maxlength="500" placeholder="Describe the activity and any relevant details"></textarea></div>
+        </div>
+        <button class="btn" type="submit">Submit Request</button>
+        <p id="formMessage" class="note" role="status"></p>
+        <p class="note">Submitting here only saves a sample request on this device. It does not constitute official approval.</p>
+      </form>
+    </div>
+  </section>
+
+  <section id="availability" class="page">
+    <div class="hero"><h1>Facility Availability</h1><p>View reservation requests saved in this browser. Pending requests are shown so users can avoid requesting the same time.</p></div>
+    <div class="card">
+      <div class="grid">
+        <div class="field"><label for="filterFacility">Filter by facility</label><select id="filterFacility"><option value="All">All facilities</option><option>Sky Garden</option><option>Skyline</option></select></div>
+        <div class="field"><label for="filterDate">Filter by date</label><input id="filterDate" type="date"></div>
+      </div>
+      <button class="btn secondary" id="clearFilters" type="button">Clear filters</button>
+      <div id="reservationList"></div>
+      <p class="note">Availability shown here is based only on this browser's local demo records. Confirm the official schedule with the school administrator.</p>
+    </div>
+  </section>
+
+  <section id="help" class="page">
+    <div class="hero"><h1>Help Center</h1><p>Guidance for using the facility reservation prototype.</p></div>
+    <div class="card faq">
+      <h2>Frequently Asked Questions</h2>
+      <details><summary>How do I request a facility?</summary><p>Open “Request Reservation,” fill in all required fields, choose the facility and schedule, describe your activity, and press “Submit Request.”</p></details>
+      <details><summary>Does submitting a request mean it is approved?</summary><p>No. A submitted request is only a request. The authorized school administrator must review and approve it.</p></details>
+      <details><summary>How can I check availability?</summary><p>Open “Availability” and filter by facility or date. This prototype only shows requests stored in the current browser.</p></details>
+      <details><summary>What if my requested time overlaps another request?</summary><p>The prototype checks for overlapping requests saved on this device and warns you. Please confirm the final schedule with the school administrator.</p></details>
+      <details><summary>Can I cancel or edit my request?</summary><p>This demonstration version does not yet include user accounts or a cancellation/editing workflow. Contact the authorized administrator for changes.</p></details>
+      <details><summary>Who should I contact if I need help?</summary><p>Please contact the school office or the staff member responsible for facility scheduling. Add the official contact details here once they are confirmed.</p></details>
+    </div>
+  </section>
+
+  <section id="about" class="page">
+    <div class="hero"><h1>About Us</h1><p>A proposed digital tool to make facility scheduling more organized and convenient.</p></div>
+    <div class="card">
+      <h2>About the Project</h2>
+      <p>The JCSGO Facility Reservation System is a student project proposal intended to help organize requests for the Sky Garden and Skyline of JCSGO Christian Academy. It aims to make facility schedules easier to check, record reservation details in one place, and help reduce scheduling conflicts.</p>
+    </div>
+    <div class="card">
+      <h2>Project Objectives</h2>
+      <ul class="steps"><li>Provide a convenient way to submit reservation requests.</li><li>Display saved requests and their current status.</li><li>Help prevent overlapping reservation times.</li><li>Support clearer communication between requesters and facility administrators.</li></ul>
+    </div>
+    <div class="card">
+      <h2>Project Team</h2>
+      <p>This prototype is being prepared by students as part of a school project. Add the complete names and assigned roles of the group members here after your group confirms them.</p>
+      <p class="note">This is a proposed system and is not an official school service unless approved and deployed by JCSGO Christian Academy.</p>
+    </div>
+  </section>
+</main>
+<footer>JCSGO Facility Reservation System • Student Project Prototype</footer>
+<script>
+const pageButtons = document.querySelectorAll('[data-page]');
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+  pageButtons.forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  if(id==='availability') renderReservations();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+pageButtons.forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));
+const STORAGE_KEY='jcsgoFacilityReservationsDemo';
+const getReservations=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return []}};
+const saveReservations=data=>localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+const dateInput=document.getElementById('date');
+const today=new Date();dateInput.min=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+document.getElementById('reservationForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const request={
+    id:Date.now(),name:document.getElementById('name').value.trim(),
+    role:document.getElementById('role').value,grade:document.getElementById('grade').value.trim(),
+    email:document.getElementById('email').value.trim(),facility:document.getElementById('facility').value,
+    date:dateInput.value,start:document.getElementById('start').value,end:document.getElementById('end').value,
+    purpose:document.getElementById('purpose').value.trim(),status:'Pending'
+  };
+  const message=document.getElementById('formMessage');
+  if(request.end<=request.start){message.textContent='Please choose an end time that is later than the start time.';return}
+  const overlap=getReservations().some(r=>r.facility===request.facility&&r.date===request.date&&r.status!=='Rejected'&&request.start<r.end&&request.end>r.start);
+  if(overlap){message.textContent='Possible scheduling conflict: a request for this facility overlaps that time. Please choose another time or confirm with the administrator.';return}
+  const all=getReservations();all.push(request);saveReservations(all);
+  message.textContent='Demo request saved as Pending. This has not been sent to the school administrator.';
+  e.target.reset();dateInput.min=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+});
+function renderReservations(){
+  const facility=document.getElementById('filterFacility').value;
+  const date=document.getElementById('filterDate').value;
+  const list=getReservations().filter(r=>(facility==='All'||r.facility===facility)&&(!date||r.date===date)).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
+  const target=document.getElementById('reservationList');
+  if(!list.length){target.innerHTML='<div class="empty">No demo reservation requests match these filters yet.</div>';return}
+  target.innerHTML='<div class="table-wrap"><table><thead><tr><th>Facility</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th></tr></thead><tbody>'+
+  list.map(r=>`<tr><td>${escapeHTML(r.facility)}</td><td>${escapeHTML(r.date)}</td><td>${escapeHTML(r.start)}–${escapeHTML(r.end)}</td><td>${escapeHTML(r.purpose)}</td><td><span class="status">${escapeHTML(r.status)}</span></td></tr>`).join('')+
+  '</tbody></table></div>';
+}
+function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.getElementById('filterFacility').addEventListener('change',renderReservations);
+document.getElementById('filterDate').addEventListener('change',renderReservations);
+document.getElementById('clearFilters').addEventListener('click',()=>{document.getElementById('filterFacility').value='All';document.getElementById('filterDate').value='';renderReservations()});
+</script>
+</body>
+</html>
